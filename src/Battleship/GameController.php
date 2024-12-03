@@ -6,6 +6,8 @@ use InvalidArgumentException;
 
 class GameController
 {
+    private static $playerHits = array();
+    private static $computerHits = array();
 
     public static function checkIsHit(array $fleet, $shot)
     {
@@ -52,5 +54,40 @@ class GameController
         $number = random_int(0, $rows - 1);
 
         return new Position($letter, $number);
+    }
+
+    public static function addHit($position, $isPlayer = true)
+    {
+        if ($isPlayer) {
+            self::$playerHits[] = $position;
+        } else {
+            self::$computerHits[] = $position;
+        }
+    }
+
+    public static function getSunkShips($fleet, $isPlayer = true)
+    {
+        $sunkShips = array();
+        $hits = $isPlayer ? self::$playerHits : self::$computerHits;
+        
+        foreach ($fleet as $ship) {
+            if ($ship->isSunk($hits)) {
+                $sunkShips[] = $ship;
+            }
+        }
+        return $sunkShips;
+    }
+
+    public static function getRemainingShips($fleet, $isPlayer = true)
+    {
+        $remaining = array();
+        $hits = $isPlayer ? self::$playerHits : self::$computerHits;
+        
+        foreach ($fleet as $ship) {
+            if (!$ship->isSunk($hits)) {
+                $remaining[] = $ship;
+            }
+        }
+        return $remaining;
     }
 }

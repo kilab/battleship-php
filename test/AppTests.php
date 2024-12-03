@@ -22,12 +22,8 @@ class AppTests extends TestCase
 
     public function testParsePosition2()
     {
-        //given
         $expected = new Position('B', 1);
-        //when
         $actual = App::parsePosition("B1");
-        //then
         $this->assertEquals($expected, $actual);
     }
-
 }

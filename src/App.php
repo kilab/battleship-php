@@ -142,16 +142,36 @@ class App
 
             if ($isHit) {
                 self::beep();
+                GameController::addHit(self::parsePosition($position), true);
                 self::$console->setForegroundColor(Color::RED);
                 self::$console->println("DIRECT HIT!");
-                self::$console->println("                \\         .  ./");
-                self::$console->println("              \\      .:\" \";'.:..\" \"   /");
-                self::$console->println("                  (M^^.^~~:.'\" \").");
-                self::$console->println("            -   (/  .    . . \\ \\)  -");
-                self::$console->println("               ((| :. ~ ^  :. .|))");
-                self::$console->println("            -   (\\- |  \\ /  |  /)  -");
-                self::$console->println("                 -\\  \\     /  /-");
-                self::$console->println("                   \\  \\   /  /");
+                
+                $sunkShips = GameController::getSunkShips(self::$enemyFleet, true);
+                if (!empty($sunkShips)) {
+                    self::$console->println("\nSunk enemy ships:");
+                    foreach ($sunkShips as $ship) {
+                        self::$console->println("- " . $ship->getName());
+                    }
+                }
+                
+                $remainingShips = GameController::getRemainingShips(self::$enemyFleet, true);
+                if (!empty($remainingShips)) {
+                    self::$console->println("\nRemaining enemy ships:");
+                    foreach ($remainingShips as $ship) {
+                        self::$console->println("- " . $ship->getName());
+                    }
+                }
+                
+                if (count($sunkShips) > count(GameController::getSunkShips(self::$enemyFleet, true)) - 1) {
+                    self::$console->println("                \\         .  ./");
+                    self::$console->println("              \\      .:\" \";'.:..\" \"   /");
+                    self::$console->println("                  (M^^.^~~:.'\" \").");
+                    self::$console->println("            -   (/  .    . . \\ \\)  -");
+                    self::$console->println("               ((| :. ~ ^  :. .|))");
+                    self::$console->println("            -   (\\- |  \\ /  |  /)  -");
+                    self::$console->println("                 -\\  \\     /  /-");
+                    self::$console->println("                   \\  \\   /  /");
+                }
             } else {
                 self::$console->setForegroundColor(Color::BLUE);
                 self::$console->println("SPLASH! Miss...");
@@ -172,14 +192,34 @@ class App
 
             if ($isHit) {
                 self::beep();
-                self::$console->println("                \\         .  ./");
-                self::$console->println("              \\      .:\" \";'.:..\" \"   /");
-                self::$console->println("                  (M^^.^~~:.'\" \").");
-                self::$console->println("            -   (/  .    . . \\ \\)  -");
-                self::$console->println("               ((| :. ~ ^  :. .|))");
-                self::$console->println("            -   (\\- |  \\ /  |  /)  -");
-                self::$console->println("                 -\\  \\     /  /-");
-                self::$console->println("                   \\  \\   /  /");
+                GameController::addHit($position, false);
+                
+                $sunkShips = GameController::getSunkShips(self::$myFleet, false);
+                if (!empty($sunkShips)) {
+                    self::$console->println("\nYour sunk ships:");
+                    foreach ($sunkShips as $ship) {
+                        self::$console->println("- " . $ship->getName());
+                    }
+                }
+                
+                $remainingShips = GameController::getRemainingShips(self::$myFleet, false);
+                if (!empty($remainingShips)) {
+                    self::$console->println("\nYour remaining ships:");
+                    foreach ($remainingShips as $ship) {
+                        self::$console->println("- " . $ship->getName());
+                    }
+                }
+                
+                if (count($sunkShips) > count(GameController::getSunkShips(self::$myFleet, false)) - 1) {
+                    self::$console->println("                \\         .  ./");
+                    self::$console->println("              \\      .:\" \";'.:..\" \"   /");
+                    self::$console->println("                  (M^^.^~~:.'\" \").");
+                    self::$console->println("            -   (/  .    . . \\ \\)  -");
+                    self::$console->println("               ((| :. ~ ^  :. .|))");
+                    self::$console->println("            -   (\\- |  \\ /  |  /)  -");
+                    self::$console->println("                 -\\  \\     /  /-");
+                    self::$console->println("                   \\  \\   /  /");
+                }
             }
 
             self::$console->setForegroundColor(Color::YELLOW);
