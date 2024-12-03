@@ -7,6 +7,11 @@ use PHPUnit\Framework\TestCase;
 
 class AppTests extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        require_once __DIR__ . '/../src/App.php';
+    }
 
     public function testParsePosition()
     {
