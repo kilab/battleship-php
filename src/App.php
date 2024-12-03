@@ -123,14 +123,11 @@ class App
         self::$console->println("  |     /_\'");
         self::$console->println("   \\    \\_/");
         self::$console->println("    \" \"\" \"\" \"\" \"");
-
+        $userHitFields =[];
         while (true) {
             self::$console->println("");
             self::$console->println("Player, it's your turn");
-            self::$console->println("Enter coordinates for your shot :");
-            $position = readline("");
-
-            $isHit = GameController::checkIsHit(self::$enemyFleet, self::parsePosition($position));
+            $isHit = self::getUserHit($userHitFields);
             if ($isHit) {
                 self::beep();
                 self::$console->println("                \\         .  ./");
@@ -167,8 +164,10 @@ class App
 //            exit();
         }
     }
-
-    public static function parsePosition($input)
+    /**
+     * @throws Exception
+     */
+    public static function parsePosition($input): Position
     {
         $letter = substr($input, 0, 1);
         $number = substr($input, 1, 1);
@@ -178,5 +177,26 @@ class App
         }
 
         return new Position($letter, $number);
+    }
+    /**
+     * @throws Exception
+     */
+    private static function getUserHit(array &$userHitFields): bool
+    {
+        self::$console->println("Enter coordinates for your shot :");
+        $position = readline("");
+        if(in_array($position, $userHitFields)){
+            self::$console->println("You have already hit this field. Please enter another one.");
+            return self::getUserHit($userHitFields);
+        }
+
+        try {
+            $isHit = GameController::checkIsHit(self::$enemyFleet, self::parsePosition($position));
+        } catch (Exception $e) {
+            self::$console->println($e->getMessage());
+            return self::getUserHit($userHitFields);
+        }
+        $userHitFields[] = $position;
+        return $isHit;
     }
 }
