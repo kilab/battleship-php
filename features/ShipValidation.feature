@@ -7,8 +7,10 @@ Feature: Validate ships
     Given I have a 5 ship with 5 positions
     When I check if the ship is valid
     Then the result should be true
+    And I should see the message in yellow color
 
   Scenario: Invalid ship placement
     Given I have a 5 ship with 4 positions
     When I check if the ship is valid
     Then the result should be false
+    And I should see the error message in red color

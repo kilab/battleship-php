@@ -84,15 +84,20 @@ class App
     {
         self::$myFleet = GameController::initializeShips();
 
-        self::$console->println("Please position your fleet (Game board has size from A to H and 1 to 8) :");
+        self::$console->setForegroundColor(Color::YELLOW);
+        self::$console->println("=== FLEET POSITIONING ===");
+        self::$console->println("Please position your fleet (Game board has size from A to H and 1 to 8):");
 
         foreach (self::$myFleet as $ship) {
-
             self::$console->println();
-            printf("Please enter the positions for the %s (size: %s)", $ship->getName(), $ship->getSize());
+            self::$console->setForegroundColor($ship->getColor());
+            printf("Positioning %s (size: %s)\n", $ship->getName(), $ship->getSize());
 
             for ($i = 1; $i <= $ship->getSize(); $i++) {
-                printf("\nEnter position %s of %s (i.e A3):", $i, $ship->getSize());
+                self::$console->setForegroundColor(Color::DEFAULT_GREY);
+                printf("Enter position %s of %s (i.e A3):", $i, $ship->getSize());
+
+                self::$console->setForegroundColor(Color::DEFAULT_GREY);
                 $input = readline("");
                 $ship->addPosition($input);
             }
@@ -112,6 +117,7 @@ class App
 
     public static function StartGame()
     {
+        self::$console->setForegroundColor(Color::YELLOW);
         self::$console->println("\033[2J\033[;H");
         self::$console->println("                  __");
         self::$console->println("                 /  \\");
@@ -125,43 +131,100 @@ class App
         self::$console->println("    \" \"\" \"\" \"\" \"");
         $userHitFields =[];
         while (true) {
-            self::$console->println("");
-            self::$console->println("Player, it's your turn");
+            self::$console->setForegroundColor(Color::YELLOW);
+            self::$console->println("\n=== PLAYER'S TURN ===");
+            self::$console->println("Enter coordinates for your shot:");
+
+            self::$console->setForegroundColor(Color::DEFAULT_GREY);
+            $position = readline("");
+
             $isHit = self::getUserHit($userHitFields);
+
             if ($isHit) {
                 self::beep();
-                self::$console->println("                \\         .  ./");
-                self::$console->println("              \\      .:\" \";'.:..\" \"   /");
-                self::$console->println("                  (M^^.^~~:.'\" \").");
-                self::$console->println("            -   (/  .    . . \\ \\)  -");
-                self::$console->println("               ((| :. ~ ^  :. .|))");
-                self::$console->println("            -   (\\- |  \\ /  |  /)  -");
-                self::$console->println("                 -\\  \\     /  /-");
-                self::$console->println("                   \\  \\   /  /");
+                GameController::addHit(self::parsePosition($position), true);
+                self::$console->setForegroundColor(Color::RED);
+                self::$console->println("DIRECT HIT!");
+
+                $sunkShips = GameController::getSunkShips(self::$enemyFleet, true);
+                if (!empty($sunkShips)) {
+                    self::$console->println("\nSunk enemy ships:");
+                    foreach ($sunkShips as $ship) {
+                        self::$console->println("- " . $ship->getName());
+                    }
+                }
+
+                $remainingShips = GameController::getRemainingShips(self::$enemyFleet, true);
+                if (!empty($remainingShips)) {
+                    self::$console->println("\nRemaining enemy ships:");
+                    foreach ($remainingShips as $ship) {
+                        self::$console->println("- " . $ship->getName());
+                    }
+                }
+
+                if (count($sunkShips) > count(GameController::getSunkShips(self::$enemyFleet, true)) - 1) {
+                    self::$console->println("                \\         .  ./");
+                    self::$console->println("              \\      .:\" \";'.:..\" \"   /");
+                    self::$console->println("                  (M^^.^~~:.'\" \").");
+                    self::$console->println("            -   (/  .    . . \\ \\)  -");
+                    self::$console->println("               ((| :. ~ ^  :. .|))");
+                    self::$console->println("            -   (\\- |  \\ /  |  /)  -");
+                    self::$console->println("                 -\\  \\     /  /-");
+                    self::$console->println("                   \\  \\   /  /");
+                }
+            } else {
+                self::$console->setForegroundColor(Color::BLUE);
+                self::$console->println("SPLASH! Miss...");
             }
 
-            echo $isHit ? "Yeah ! Nice hit !" : "Miss";
-            self::$console->println();
+            self::$console->setForegroundColor(Color::YELLOW);
+            self::$console->println("\n=== COMPUTER'S TURN ===");
 
             $position = self::getRandomPosition();
             $isHit = GameController::checkIsHit(self::$myFleet, $position);
-            self::$console->println();
-            printf("Computer shoot in %s%s and %s", $position->getColumn(), $position->getRow(), $isHit ? "hit your ship !\n" : "miss");
+
+            self::$console->setForegroundColor($isHit ? Color::RED : Color::BLUE);
+            printf("Computer shoots at %s%s - %s\n",
+                $position->getColumn(),
+                $position->getRow(),
+                $isHit ? "HIT!" : "Miss"
+            );
+
             if ($isHit) {
                 self::beep();
+                GameController::addHit($position, false);
 
-                self::$console->println("                \\         .  ./");
-                self::$console->println("              \\      .:\" \";'.:..\" \"   /");
-                self::$console->println("                  (M^^.^~~:.'\" \").");
-                self::$console->println("            -   (/  .    . . \\ \\)  -");
-                self::$console->println("               ((| :. ~ ^  :. .|))");
-                self::$console->println("            -   (\\- |  \\ /  |  /)  -");
-                self::$console->println("                 -\\  \\     /  /-");
-                self::$console->println("                   \\  \\   /  /");
+                $sunkShips = GameController::getSunkShips(self::$myFleet, false);
+                if (!empty($sunkShips)) {
+                    self::$console->println("\nYour sunk ships:");
+                    foreach ($sunkShips as $ship) {
+                        self::$console->println("- " . $ship->getName());
+                    }
+                }
 
+                $remainingShips = GameController::getRemainingShips(self::$myFleet, false);
+                if (!empty($remainingShips)) {
+                    self::$console->println("\nYour remaining ships:");
+                    foreach ($remainingShips as $ship) {
+                        self::$console->println("- " . $ship->getName());
+                    }
+                }
+
+                if (count($sunkShips) > count(GameController::getSunkShips(self::$myFleet, false)) - 1) {
+                    self::$console->println("                \\         .  ./");
+                    self::$console->println("              \\      .:\" \";'.:..\" \"   /");
+                    self::$console->println("                  (M^^.^~~:.'\" \").");
+                    self::$console->println("            -   (/  .    . . \\ \\)  -");
+                    self::$console->println("               ((| :. ~ ^  :. .|))");
+                    self::$console->println("            -   (\\- |  \\ /  |  /)  -");
+                    self::$console->println("                 -\\  \\     /  /-");
+                    self::$console->println("                   \\  \\   /  /");
+                }
             }
 
-//            exit();
+            self::$console->setForegroundColor(Color::YELLOW);
+            self::$console->println("\n=== END OF ROUND ===");
+            self::$console->setForegroundColor(Color::DEFAULT_GREY);
         }
     }
     /**
