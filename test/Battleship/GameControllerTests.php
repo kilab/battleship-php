@@ -7,8 +7,6 @@ use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use TypeError;
 
-//use PHPUnit\Util\Exception;
-
 final class GameControllerTests extends TestCase
 {
     public function testCheckIsHitTrue()
