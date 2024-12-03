@@ -4,10 +4,17 @@ use Battleship\GameController;
 use Battleship\Position;
 use Battleship\Letter;
 use Battleship\Color;
+use Battleship\Ship;
 
 class App
 {
+    /**
+     * @var array|Ship[]
+     */
     private static $myFleet = array();
+    /**
+     * @var array|Ship[]
+     */
     private static $enemyFleet = array();
     private static $console;
 
@@ -39,27 +46,27 @@ class App
     {
         self::$enemyFleet = GameController::initializeShips();
 
-        array_push(self::$enemyFleet[0]->getPositions(), new Position('B', 4));
-        array_push(self::$enemyFleet[0]->getPositions(), new Position('B', 5));
-        array_push(self::$enemyFleet[0]->getPositions(), new Position('B', 6));
-        array_push(self::$enemyFleet[0]->getPositions(), new Position('B', 7));
-        array_push(self::$enemyFleet[0]->getPositions(), new Position('B', 8));
+        self::$enemyFleet[0]->addPosition(new Position('B', 4));
+        self::$enemyFleet[0]->addPosition(new Position('B', 5));
+        self::$enemyFleet[0]->addPosition(new Position('B', 6));
+        self::$enemyFleet[0]->addPosition(new Position('B', 7));
+        self::$enemyFleet[0]->addPosition(new Position('B', 8));
 
-        array_push(self::$enemyFleet[1]->getPositions(), new Position('E', 6));
-        array_push(self::$enemyFleet[1]->getPositions(), new Position('E', 7));
-        array_push(self::$enemyFleet[1]->getPositions(), new Position('E', 8));
-        array_push(self::$enemyFleet[1]->getPositions(), new Position('E', 9));
+        self::$enemyFleet[0]->addPosition(new Position('E', 6));
+        self::$enemyFleet[0]->addPosition(new Position('E', 7));
+        self::$enemyFleet[0]->addPosition(new Position('E', 8));
+        self::$enemyFleet[0]->addPosition(new Position('E', 9));
 
-        array_push(self::$enemyFleet[2]->getPositions(), new Position('A', 3));
-        array_push(self::$enemyFleet[2]->getPositions(), new Position('B', 3));
-        array_push(self::$enemyFleet[2]->getPositions(), new Position('C', 3));
+        self::$enemyFleet[0]->addPosition(new Position('A', 3));
+        self::$enemyFleet[0]->addPosition(new Position('B', 3));
+        self::$enemyFleet[0]->addPosition(new Position('C', 3));
 
-        array_push(self::$enemyFleet[3]->getPositions(), new Position('F', 8));
-        array_push(self::$enemyFleet[3]->getPositions(), new Position('G', 8));
-        array_push(self::$enemyFleet[3]->getPositions(), new Position('H', 8));
+        self::$enemyFleet[1]->addPosition(new Position('F', 8));
+        self::$enemyFleet[1]->addPosition(new Position('G', 8));
+        self::$enemyFleet[1]->addPosition(new Position('H', 8));
 
-        array_push(self::$enemyFleet[4]->getPositions(), new Position('C', 5));
-        array_push(self::$enemyFleet[4]->getPositions(), new Position('C', 6));
+        self::$enemyFleet[2]->addPosition(new Position('C', 5));
+        self::$enemyFleet[2]->addPosition(new Position('C', 6));
     }
 
     public static function getRandomPosition()

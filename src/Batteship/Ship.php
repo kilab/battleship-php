@@ -4,7 +4,6 @@ namespace Battleship;
 
 class Ship
 {
-
     private $name;
     private $size;
     private $color;
@@ -20,7 +19,7 @@ class Ship
     /**
      * @return mixed
      */
-    public function getName()
+    public function getName(): mixed
     {
         return $this->name;
     }
@@ -28,7 +27,7 @@ class Ship
     /**
      * @return mixed
      */
-    public function getSize()
+    public function getSize(): mixed
     {
         return $this->size;
     }
@@ -36,27 +35,26 @@ class Ship
     /**
      * @return mixed
      */
-    public function getColor()
+    public function getColor(): mixed
     {
         return $this->color;
     }
 
-    public function addPosition($input)
+    public function addPosition(string $input): void
     {
         $letter = substr($input, 0, 1);
         $number = substr($input, 1, 1);
 
-        array_push($this->positions, new Position($letter, $number));
+        $this->positions[] = new Position($letter, $number);
     }
 
-    public function &getPositions()
+    public function getPositions(): array
     {
         return $this->positions;
     }
 
-    public function setSize($size)
+    public function setSize($size): void
     {
         $this->size = $size;
     }
-
 }
