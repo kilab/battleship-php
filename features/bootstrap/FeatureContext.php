@@ -31,13 +31,12 @@ class FeatureContext implements Context
      * @param $size
      * @param $positions
      */
-    public function iHaveAShipWithPositions($size, $positions)
+    public function iHaveAShipWithPositions(int $size, int $positions)
     {
-        $this->ship = new Ship("test", 0, Color::RED);
+        $this->ship = new Ship("test", $size, Color::RED);
 
-        $this->ship->setSize($size);
         for ($i = 0; $i < $positions; $i++) {
-            array_push($this->ship->getPositions(), new Position('A', $i));
+            $this->ship->addPosition(new Position('A', $i));
         }
     }
 

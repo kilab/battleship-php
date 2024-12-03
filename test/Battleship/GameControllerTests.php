@@ -20,7 +20,7 @@ final class GameControllerTests extends TestCase
             $letter = Letter::$letters[$counter];
 
             for ($i = 0; $i < $ship->getSize(); $i++) {
-                array_push($ship->getPositions(), new Position($letter, $i));
+                $ship->addPosition(new Position($letter, $i));
             }
 
             $counter++;
@@ -40,7 +40,7 @@ final class GameControllerTests extends TestCase
             $letter = Letter::$letters[$counter];
 
             for ($i = 0; $i < $ship->getSize(); $i++) {
-                array_push($ship->getPositions(), new Position($letter, $i));
+                $ship->addPosition(new Position($letter, $i));
             }
 
             $counter++;
@@ -76,7 +76,7 @@ final class GameControllerTests extends TestCase
         $positions = array(new Position('A', 1), new Position('A', 1), new Position('A', 1));
         $ship = new Ship("TestShip", 3);
         foreach ($positions as $position) {
-            array_push($ship->getPositions(), $position);
+            $ship->addPosition($position);
         }
 
         $result = GameController::isShipValid($ship);

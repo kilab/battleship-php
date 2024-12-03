@@ -5,12 +5,12 @@
 A simple game of Battleship, written in PHP. The purpose of this repository is to serve as an entry point into coding exercises and it was especially created for scrum.orgs Applying Professional Scrum for Software Development course (www.scrum.org/apssd). The code in this repository is unfinished by design.
 Created by Sergey https://github.com/2heoh 
 
-# Getting started
+## Getting started
 
-This project requires a php7 or higher. To prepare to work with it, pick one of these
+This project requires a php 8.4 or higher. To prepare to work with it, pick one of these
 options:
 
-## Run locally
+### Run locally
 
 Run battleship with composer
 
@@ -18,7 +18,7 @@ Run battleship with composer
 composer run game
 ```
 
-## Execute tests with composer
+#### Execute tests with composer
 
 Install dependencies
 ```bash
@@ -30,24 +30,24 @@ Run tests
 composer run test
 ```
 
-## Docker
+### Docker
 
 If you don't want to install anything php-related on your system, you can
 run the game inside Docker instead.
 
-### Run a Docker Container from the Image
+#### Run a Docker Container from the Image
 
 ```bash
 docker run -it -v ${PWD}:/battleship -w /battleship composer bash
 ```
 
-# Launching the game
+#### Launching the game
 
 ```bash
 composer run game
 ```
 
-# Running the Tests
+#### Running the Tests
 
 Don't forget to install dependencies ;)
 ```bash
@@ -59,7 +59,21 @@ Run tests:
 composer run test
 ```
 
-### Troubleshooting 
+#### Or use simplified commands:
+
+```bash
+docker run -it -v ${PWD}:/battleship -w /battleship composer composer run test
+```
+
+```bash
+docker run -it -v ${PWD}:/battleship -w /battleship composer composer run unittest
+```
+
+```bash
+docker run -it -v ${PWD}:/battleship -w /battleship composer composer run game
+```
+
+## Troubleshooting 
 
 1. On my ubuntu virtual server on DO I needed to install:
 ```bash
