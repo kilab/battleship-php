@@ -246,7 +246,10 @@ class App
      */
     private static function getUserHit(array &$userHitFields): bool
     {
+        self::$console->setForegroundColor(Color::YELLOW);
         self::$console->println("Enter coordinates for your shot :");
+        self::$console->setForegroundColor(Color::DEFAULT_GREY);
+
         $position = readline("");
         if(in_array($position, $userHitFields)){
             self::$console->println("You have already hit this field. Please enter another one.");
