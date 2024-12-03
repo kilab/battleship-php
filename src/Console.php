@@ -1,12 +1,12 @@
 <?php
 
-//use Battleship\Color;
+use Battleship\Color;
 
 class Console
 {
     function resetForegroundColor()
     {
-        echo(Battleship\Color::DEFAULT_GREY);
+        echo(Color::DEFAULT_GREY);
     }
 
     function setForegroundColor($color)
