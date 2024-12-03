@@ -224,9 +224,7 @@ class App
 
             self::$console->setForegroundColor(Color::YELLOW);
             self::$console->println("\n=== END OF ROUND ===");
-            self::$console->println("Press Enter to continue...");
             self::$console->setForegroundColor(Color::DEFAULT_GREY);
-            readline("");
         }
     }
 
