@@ -15,6 +15,8 @@ class FeatureContext implements Context
 {
     private $ship;
     private $validationResult;
+    private $console;
+
     /**
      * Initializes context.
      *
@@ -24,6 +26,7 @@ class FeatureContext implements Context
      */
     public function __construct()
     {
+        $this->console = new Console();
     }
 
     /**
@@ -62,5 +65,27 @@ class FeatureContext implements Context
     public function theResultShouldBeFalse()
     {
         Assert::assertFalse($this->validationResult);
+    }
+
+    /**
+     * @Then I should see the message in yellow color
+     */
+    public function iShouldSeeTheMessageInYellowColor()
+    {
+        ob_start();
+        $this->console->setForegroundColor(Color::YELLOW);
+        $output = ob_get_clean();
+        Assert::assertStringContainsString(Color::YELLOW, $output);
+    }
+
+    /**
+     * @Then I should see the error message in red color
+     */
+    public function iShouldSeeTheErrorMessageInRedColor()
+    {
+        ob_start();
+        $this->console->setForegroundColor(Color::RED);
+        $output = ob_get_clean();
+        Assert::assertStringContainsString(Color::RED, $output);
     }
 }

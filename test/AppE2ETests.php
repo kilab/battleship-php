@@ -15,7 +15,7 @@ final class AppE2ETests extends TestCase
         $out = ob_get_contents();
         ob_end_clean();
         $this->assertStringContainsString("Welcome to Battleship", $out);
-        $this->assertStringContainsString("Yeah ! Nice hit !", $out);
+        $this->assertStringContainsString("DIRECT HIT!", $out);
     }
 
     public function testPlayGameShotMisses()
@@ -31,7 +31,7 @@ final class AppE2ETests extends TestCase
         $out = ob_get_contents();
         ob_end_clean();
         $this->assertStringContainsString("Welcome to Battleship", $out);
-        $this->assertStringContainsString("Miss", $out);
+        $this->assertStringContainsString("SPLASH! Miss...", $out);
     }
 
 }

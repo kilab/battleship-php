@@ -57,4 +57,17 @@ class Ship
     {
         $this->size = $size;
     }
+
+    public function isSunk(array $hits): bool
+    {
+        $hitCount = 0;
+        foreach ($this->positions as $position) {
+            foreach ($hits as $hit) {
+                if ($position == $hit) {
+                    $hitCount++;
+                }
+            }
+        }
+        return $hitCount == $this->size;
+    }
 }
