@@ -159,8 +159,8 @@ class App
 
             $position = null;
             while ($position === null) {
-                self::$console->println("Enter coordinates for your shot (A-H + 1-8, e.g. A5):");
                 self::$console->setForegroundColor(Color::DEFAULT_GREY);
+                self::$console->println("Enter coordinates for your shot (A-H + 1-8, e.g. A5):");
                 $input = readline("");
 
                 try {
@@ -246,7 +246,7 @@ class App
             }
 
             if (count(GameController::getSunkShips(self::$myFleet, false)) == count(self::$myFleet)) {
-                self::$console->setForegroundColor(Color::RED);
+                self::$console->setForegroundColor(Color::DEFAULT_GREY);
                 self::$console->println("\n=== GAME OVER ===");
                 self::$console->println("You lost!");
                 break;
