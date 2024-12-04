@@ -18,7 +18,7 @@ class App
     private static $enemyFleet = array();
     private static $console;
 
-    static function run()
+    static function run($args)
     {
         self::$console = new Console();
         self::$console->setForegroundColor(Color::MAGENTA);
@@ -37,36 +37,86 @@ class App
         self::$console->println("|                        Welcome to Battleship                         BB-61/");
         self::$console->println(" \\_________________________________________________________________________|");
         self::$console->println();
+
         self::$console->resetForegroundColor();
-        self::InitializeGame();
+
+        GameController::resetGame();
+        self::InitializeEnemyFleet();
+
+        if ($args instanceof \Composer\Script\Event) {
+            $args = $args->getArguments();
+        }
+
+        if (in_array('--debug', $args)) {
+            self::showEnemyFleet();
+        }
+
+        self::InitializeMyFleet();
         self::StartGame();
+    }
+
+    private static function showEnemyFleet()
+    {
+        self::$console->setForegroundColor(Color::CADET_BLUE);
+        self::$console->println("=== ENEMY FLEET POSITIONS ===");
+        foreach (self::$enemyFleet as $ship) {
+            self::$console->println($ship->getName() . ":");
+            foreach ($ship->getPositions() as $position) {
+                self::$console->println("- " . $position->getColumn() . $position->getRow());
+            }
+        }
+        self::$console->resetForegroundColor();
     }
 
     public static function InitializeEnemyFleet()
     {
+        $fleetConfigurations = [
+            [
+                [new Position('B', 4), new Position('B', 5), new Position('B', 6), new Position('B', 7), new Position('B', 8)],
+                [new Position('E', 5), new Position('E', 6), new Position('E', 7), new Position('E', 8)],
+                [new Position('A', 3), new Position('B', 3), new Position('C', 3)],
+                [new Position('F', 8), new Position('G', 8), new Position('H', 8)],
+                [new Position('C', 5), new Position('C', 6)]
+            ],
+            [
+                [new Position('A', 1), new Position('A', 2), new Position('A', 3), new Position('A', 4), new Position('A', 5)],
+                [new Position('D', 2), new Position('D', 3), new Position('D', 4), new Position('D', 5)],
+                [new Position('G', 1), new Position('G', 2), new Position('G', 3)],
+                [new Position('H', 5), new Position('H', 6), new Position('H', 7)],
+                [new Position('E', 8), new Position('F', 8)]
+            ],
+            [
+                [new Position('C', 1), new Position('C', 2), new Position('C', 3), new Position('C', 4), new Position('C', 5)],
+                [new Position('F', 3), new Position('F', 4), new Position('F', 5), new Position('F', 6)],
+                [new Position('B', 7), new Position('C', 7), new Position('D', 7)],
+                [new Position('E', 1), new Position('F', 1), new Position('G', 1)],
+                [new Position('H', 3), new Position('H', 4)]
+            ],
+            [
+                [new Position('D', 5), new Position('D', 6), new Position('D', 7), new Position('D', 8), new Position('D', 9)],
+                [new Position('A', 6), new Position('A', 7), new Position('A', 8), new Position('A', 9)],
+                [new Position('F', 2), new Position('G', 2), new Position('H', 2)],
+                [new Position('B', 4), new Position('C', 4), new Position('D', 4)],
+                [new Position('E', 7), new Position('F', 7)]
+            ],
+            [
+                [new Position('G', 3), new Position('G', 4), new Position('G', 5), new Position('G', 6), new Position('G', 7)],
+                [new Position('B', 1), new Position('B', 2), new Position('B', 3), new Position('B', 4)],
+                [new Position('E', 5), new Position('F', 5), new Position('G', 5)],
+                [new Position('C', 8), new Position('D', 8), new Position('E', 8)],
+                [new Position('H', 1), new Position('H', 2)]
+            ]
+        ];
+
+        $selectedConfiguration = $fleetConfigurations[array_rand($fleetConfigurations)];
+
         self::$enemyFleet = GameController::initializeShips();
 
-        self::$enemyFleet[0]->addPosition(new Position('B', 4));
-        self::$enemyFleet[0]->addPosition(new Position('B', 5));
-        self::$enemyFleet[0]->addPosition(new Position('B', 6));
-        self::$enemyFleet[0]->addPosition(new Position('B', 7));
-        self::$enemyFleet[0]->addPosition(new Position('B', 8));
-
-        self::$enemyFleet[1]->addPosition(new Position('E', 6));
-        self::$enemyFleet[1]->addPosition(new Position('E', 7));
-        self::$enemyFleet[1]->addPosition(new Position('E', 8));
-        self::$enemyFleet[1]->addPosition(new Position('E', 9));
-
-        self::$enemyFleet[2]->addPosition(new Position('A', 3));
-        self::$enemyFleet[2]->addPosition(new Position('B', 3));
-        self::$enemyFleet[2]->addPosition(new Position('C', 3));
-
-        self::$enemyFleet[3]->addPosition(new Position('F', 8));
-        self::$enemyFleet[3]->addPosition(new Position('G', 8));
-        self::$enemyFleet[3]->addPosition(new Position('H', 8));
-
-        self::$enemyFleet[4]->addPosition(new Position('C', 5));
-        self::$enemyFleet[4]->addPosition(new Position('C', 6));
+        foreach (self::$enemyFleet as $index => $ship) {
+            foreach ($selectedConfiguration[$index] as $position) {
+                $ship->addPosition($position);
+            }
+        }
     }
 
     public static function getRandomPosition()
@@ -134,8 +184,8 @@ class App
     public static function InitializeGame()
     {
         GameController::resetGame();
-        self::InitializeMyFleet();
         self::InitializeEnemyFleet();
+        self::InitializeMyFleet();
     }
 
     public static function StartGame()
