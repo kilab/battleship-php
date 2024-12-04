@@ -52,21 +52,21 @@ class App
         self::$enemyFleet[0]->addPosition(new Position('B', 7));
         self::$enemyFleet[0]->addPosition(new Position('B', 8));
 
-        self::$enemyFleet[0]->addPosition(new Position('E', 6));
-        self::$enemyFleet[0]->addPosition(new Position('E', 7));
-        self::$enemyFleet[0]->addPosition(new Position('E', 8));
-        self::$enemyFleet[0]->addPosition(new Position('E', 9));
+        self::$enemyFleet[1]->addPosition(new Position('E', 5));
+        self::$enemyFleet[1]->addPosition(new Position('E', 6));
+        self::$enemyFleet[1]->addPosition(new Position('E', 7));
+        self::$enemyFleet[1]->addPosition(new Position('E', 8));
 
-        self::$enemyFleet[0]->addPosition(new Position('A', 3));
-        self::$enemyFleet[0]->addPosition(new Position('B', 3));
-        self::$enemyFleet[0]->addPosition(new Position('C', 3));
+        self::$enemyFleet[2]->addPosition(new Position('A', 3));
+        self::$enemyFleet[2]->addPosition(new Position('B', 3));
+        self::$enemyFleet[2]->addPosition(new Position('C', 3));
 
-        self::$enemyFleet[1]->addPosition(new Position('F', 8));
-        self::$enemyFleet[1]->addPosition(new Position('G', 8));
-        self::$enemyFleet[1]->addPosition(new Position('H', 8));
+        self::$enemyFleet[3]->addPosition(new Position('F', 8));
+        self::$enemyFleet[3]->addPosition(new Position('G', 8));
+        self::$enemyFleet[3]->addPosition(new Position('H', 8));
 
-        self::$enemyFleet[2]->addPosition(new Position('C', 5));
-        self::$enemyFleet[2]->addPosition(new Position('C', 6));
+        self::$enemyFleet[4]->addPosition(new Position('C', 5));
+        self::$enemyFleet[4]->addPosition(new Position('C', 6));
     }
 
     public static function getRandomPosition()
@@ -94,12 +94,34 @@ class App
             printf("Positioning %s (size: %s)\n", $ship->getName(), $ship->getSize());
 
             for ($i = 1; $i <= $ship->getSize(); $i++) {
-                self::$console->setForegroundColor(Color::DEFAULT_GREY);
-                printf("Enter position %s of %s (i.e A3):", $i, $ship->getSize());
+                $position = null;
+                while ($position === null) {
+                    self::$console->setForegroundColor(Color::DEFAULT_GREY);
+                    printf("Enter position %s of %s (i.e A3):", $i, $ship->getSize());
 
-                self::$console->setForegroundColor(Color::DEFAULT_GREY);
-                $input = readline("");
-                $ship->addPosition($input);
+                    $input = readline("");
+
+                    try {
+                        $position = self::parsePosition($input);
+
+                        // Check if position is already taken
+                        foreach (self::$myFleet as $existingShip) {
+                            foreach ($existingShip->getPositions() as $existingPosition) {
+                                if ($existingPosition == $position) {
+                                    throw new \Exception("Position already occupied by another ship");
+                                }
+                            }
+                        }
+
+                        $ship->addPosition($position->getColumn() . $position->getRow());
+
+                    } catch (\Exception $e) {
+                        self::$console->setForegroundColor(Color::RED);
+                        self::$console->println("Error: " . $e->getMessage());
+                        $position = null;
+                        continue;
+                    }
+                }
             }
         }
     }
@@ -111,6 +133,7 @@ class App
 
     public static function InitializeGame()
     {
+        GameController::resetGame();
         self::InitializeMyFleet();
         self::InitializeEnemyFleet();
     }
@@ -133,48 +156,58 @@ class App
         while (true) {
             self::$console->setForegroundColor(Color::YELLOW);
             self::$console->println("\n=== PLAYER'S TURN ===");
-            self::$console->println("Enter coordinates for your shot:");
 
-            self::$console->setForegroundColor(Color::DEFAULT_GREY);
-            $position = readline("");
+            $position = null;
+            while ($position === null) {
+                self::$console->println("Enter coordinates for your shot (A-H + 1-8, e.g. A5):");
+                self::$console->setForegroundColor(Color::DEFAULT_GREY);
+                $input = readline("");
+
+                try {
+                    $position = self::parsePosition($input);
+                } catch (\Exception $e) {
+                    self::$console->setForegroundColor(Color::RED);
+                    self::$console->println("Error: " . $e->getMessage());
+                    self::$console->setForegroundColor(Color::YELLOW);
+                    continue;
+                }
+            }
 
             $isHit = GameController::checkIsHit(self::$enemyFleet, self::parsePosition($position));
 
             if ($isHit) {
                 self::beep();
-                GameController::addHit(self::parsePosition($position), true);
+                $previousSunkShips = GameController::getSunkShips(self::$enemyFleet, true);
+                $previousCount = count($previousSunkShips);
+                GameController::addHit($position, true);
+                $currentSunkShips = GameController::getSunkShips(self::$enemyFleet, true);
+                $currentCount = count($currentSunkShips);
+
                 self::$console->setForegroundColor(Color::RED);
                 self::$console->println("DIRECT HIT!");
-                
-                $sunkShips = GameController::getSunkShips(self::$enemyFleet, true);
-                if (!empty($sunkShips)) {
-                    self::$console->println("\nSunk enemy ships:");
-                    foreach ($sunkShips as $ship) {
-                        self::$console->println("- " . $ship->getName());
+
+                if ($currentCount > $previousCount) {
+                    $justSunkShip = end($currentSunkShips);
+                    self::$console->println(sprintf("\nYou just sunk the enemy's %s!", $justSunkShip->getName()));
+
+                    $remainingShips = GameController::getRemainingShips(self::$enemyFleet, true);
+                    if (!empty($remainingShips)) {
+                        self::$console->println("\nRemaining enemy ships:");
+                        foreach ($remainingShips as $ship) {
+                            self::$console->println("- " . $ship->getName());
+                        }
                     }
-                }
-                
-                $remainingShips = GameController::getRemainingShips(self::$enemyFleet, true);
-                if (!empty($remainingShips)) {
-                    self::$console->println("\nRemaining enemy ships:");
-                    foreach ($remainingShips as $ship) {
-                        self::$console->println("- " . $ship->getName());
-                    }
-                }
-                
-                if (count($sunkShips) > count(GameController::getSunkShips(self::$enemyFleet, true)) - 1) {
-                    self::$console->println("                \\         .  ./");
-                    self::$console->println("              \\      .:\" \";'.:..\" \"   /");
-                    self::$console->println("                  (M^^.^~~:.'\" \").");
-                    self::$console->println("            -   (/  .    . . \\ \\)  -");
-                    self::$console->println("               ((| :. ~ ^  :. .|))");
-                    self::$console->println("            -   (\\- |  \\ /  |  /)  -");
-                    self::$console->println("                 -\\  \\     /  /-");
-                    self::$console->println("                   \\  \\   /  /");
                 }
             } else {
                 self::$console->setForegroundColor(Color::BLUE);
                 self::$console->println("SPLASH! Miss...");
+            }
+
+            if (count(GameController::getSunkShips(self::$enemyFleet, true)) == count(self::$enemyFleet)) {
+                self::$console->setForegroundColor(Color::CHARTREUSE);
+                self::$console->println("\n=== GAME OVER ===");
+                self::$console->println("You are the winner!");
+                break;
             }
 
             self::$console->setForegroundColor(Color::YELLOW);
@@ -192,34 +225,31 @@ class App
 
             if ($isHit) {
                 self::beep();
+                $previousSunkShips = GameController::getSunkShips(self::$myFleet, false);
+                $previousCount = count($previousSunkShips);
                 GameController::addHit($position, false);
-                
-                $sunkShips = GameController::getSunkShips(self::$myFleet, false);
-                if (!empty($sunkShips)) {
-                    self::$console->println("\nYour sunk ships:");
-                    foreach ($sunkShips as $ship) {
-                        self::$console->println("- " . $ship->getName());
+                $currentSunkShips = GameController::getSunkShips(self::$myFleet, false);
+                $currentCount = count($currentSunkShips);
+
+                if ($currentCount > $previousCount) {
+                    $justSunkShip = end($currentSunkShips);
+                    self::$console->println(sprintf("\nThe computer sunk your %s!", $justSunkShip->getName()));
+
+                    $remainingShips = GameController::getRemainingShips(self::$myFleet, false);
+                    if (!empty($remainingShips)) {
+                        self::$console->println("\nYour remaining ships:");
+                        foreach ($remainingShips as $ship) {
+                            self::$console->println("- " . $ship->getName());
+                        }
                     }
                 }
-                
-                $remainingShips = GameController::getRemainingShips(self::$myFleet, false);
-                if (!empty($remainingShips)) {
-                    self::$console->println("\nYour remaining ships:");
-                    foreach ($remainingShips as $ship) {
-                        self::$console->println("- " . $ship->getName());
-                    }
-                }
-                
-                if (count($sunkShips) > count(GameController::getSunkShips(self::$myFleet, false)) - 1) {
-                    self::$console->println("                \\         .  ./");
-                    self::$console->println("              \\      .:\" \";'.:..\" \"   /");
-                    self::$console->println("                  (M^^.^~~:.'\" \").");
-                    self::$console->println("            -   (/  .    . . \\ \\)  -");
-                    self::$console->println("               ((| :. ~ ^  :. .|))");
-                    self::$console->println("            -   (\\- |  \\ /  |  /)  -");
-                    self::$console->println("                 -\\  \\     /  /-");
-                    self::$console->println("                   \\  \\   /  /");
-                }
+            }
+
+            if (count(GameController::getSunkShips(self::$myFleet, false)) == count(self::$myFleet)) {
+                self::$console->setForegroundColor(Color::RED);
+                self::$console->println("\n=== GAME OVER ===");
+                self::$console->println("You lost!");
+                break;
             }
 
             self::$console->setForegroundColor(Color::YELLOW);
@@ -230,13 +260,25 @@ class App
 
     public static function parsePosition($input)
     {
-        $letter = substr($input, 0, 1);
-        $number = substr($input, 1, 1);
+        try {
+            if (strlen($input) < 2) {
+                throw new \Exception("Invalid input format. Please use format like 'A5'");
+            }
 
-        if(!is_numeric($number)) {
-            throw new Exception("Not a number: $number");
+            $letter = strtoupper(substr($input, 0, 1));
+            $number = substr($input, 1);
+
+            if (!in_array($letter, Letter::$letters)) {
+                throw new \Exception("Invalid column. Please use letters A-H");
+            }
+
+            if (!is_numeric($number) || $number < 1 || $number > 8) {
+                throw new \Exception("Invalid row. Please use numbers 1-8");
+            }
+
+            return new Position($letter, $number);
+        } catch (\Exception $e) {
+            throw new \Exception($e->getMessage());
         }
-
-        return new Position($letter, $number);
     }
 }

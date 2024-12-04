@@ -8,6 +8,8 @@ class GameController
 {
     private static $playerHits = array();
     private static $computerHits = array();
+    private static $playerSunkShips = array();
+    private static $computerSunkShips = array();
 
     public static function checkIsHit(array $fleet, $shot)
     {
@@ -67,27 +69,35 @@ class GameController
 
     public static function getSunkShips($fleet, $isPlayer = true)
     {
-        $sunkShips = array();
         $hits = $isPlayer ? self::$playerHits : self::$computerHits;
+        $sunkShipsArray = $isPlayer ? self::$playerSunkShips : self::$computerSunkShips;
         
         foreach ($fleet as $ship) {
-            if ($ship->isSunk($hits)) {
-                $sunkShips[] = $ship;
+            if ($ship->isSunk($hits) && !in_array($ship, $sunkShipsArray)) {
+                if ($isPlayer) {
+                    self::$playerSunkShips[] = $ship;
+                } else {
+                    self::$computerSunkShips[] = $ship;
+                }
             }
         }
-        return $sunkShips;
+        
+        return $isPlayer ? self::$playerSunkShips : self::$computerSunkShips;
     }
 
     public static function getRemainingShips($fleet, $isPlayer = true)
     {
-        $remaining = array();
-        $hits = $isPlayer ? self::$playerHits : self::$computerHits;
-        
-        foreach ($fleet as $ship) {
-            if (!$ship->isSunk($hits)) {
-                $remaining[] = $ship;
-            }
-        }
-        return $remaining;
+        $sunkShips = self::getSunkShips($fleet, $isPlayer);
+        return array_filter($fleet, function($ship) use ($sunkShips) {
+            return !in_array($ship, $sunkShips);
+        });
+    }
+
+    public static function resetGame()
+    {
+        self::$playerHits = array();
+        self::$computerHits = array();
+        self::$playerSunkShips = array();
+        self::$computerSunkShips = array();
     }
 }
