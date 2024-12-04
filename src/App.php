@@ -256,6 +256,48 @@ class App
             if (count(GameController::getSunkShips(self::$enemyFleet, true)) == count(self::$enemyFleet)) {
                 self::$console->setForegroundColor(Color::CHARTREUSE);
                 self::$console->println("\n=== GAME OVER ===");
+                self::$console->println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                self::$console->println("~                                                                            ~");
+                self::$console->println("~                                                                            ~");
+                self::$console->println("~                                                                            ~");
+                self::$console->println("~                                                                            ~");
+                self::$console->println("~                                                                            ~");
+                self::$console->println("~     ▓██   ██▓ ▒█████   █    ██      ██████  █    ██  ███▄    █  ██ ▄█▀     ~");
+                self::$console->println("~      ▒██  ██▒▒██▒  ██▒ ██  ▓██▒   ▒██    ▒  ██  ▓██▒ ██ ▀█   █  ██▄█▒      ~");
+                self::$console->println("~       ▒██ ██░▒██░  ██▒▓██  ▒██░   ░ ▓██▄   ▓██  ▒██░▓██  ▀█ ██▒▓███▄░      ~");
+                self::$console->println("~       ░ ▐██▓░▒██   ██░▓▓█  ░██░     ▒   ██▒▓▓█  ░██░▓██▒  ▐▌██▒▓██ █▄      ~");
+                self::$console->println("~       ░ ██▒▓░░ ████▓▒░▒▒█████▓    ▒██████▒▒▒▒█████▓ ▒██░   ▓██░▒██▒ █▄     ~");
+                self::$console->println("~        ██▒▒▒ ░ ▒░▒░▒░ ░▒▓▒ ▒ ▒    ▒ ▒▓▒ ▒ ░░▒▓▒ ▒ ▒ ░ ▒░   ▒ ▒ ▒ ▒▒ ▓▒     ~");
+                self::$console->println("~      ▓██ ░▒░   ░ ▒ ▒░ ░░▒░ ░ ░    ░ ░▒  ░ ░░░▒░ ░ ░ ░ ░░   ░ ▒░░ ░▒ ▒░     ~");
+                self::$console->println("~      ▒ ▒ ░░  ░ ░ ░ ▒   ░░░ ░ ░    ░  ░  ░   ░░░ ░ ░    ░   ░ ░ ░ ░░ ░      ~");
+                self::$console->println("~      ░ ░         ░ ░     ░              ░     ░              ░ ░  ░        ~");
+                self::$console->println("~      ░ ░                                                                   ~");
+                self::$console->println("~        ▄▄▄█████▓ ██░ ██  ▄▄▄      ▄▄▄█████▓    ███▄ ▄███▓  █████▒          ~");
+                self::$console->println("~        ▓  ██▒ ▓▒▓██░ ██▒▒████▄    ▓  ██▒ ▓▒   ▓██▒▀█▀ ██▒▓██   ▒           ~");
+                self::$console->println("~        ▒ ▓██░ ▒░▒██▀▀██░▒██  ▀█▄  ▒ ▓██░ ▒░   ▓██    ▓██░▒████ ░           ~");
+                self::$console->println("~        ░ ▓██▓ ░ ░▓█ ░██ ░██▄▄▄▄██ ░ ▓██▓ ░    ▒██    ▒██ ░▓█▒  ░           ~");
+                self::$console->println("~          ▒██▒ ░ ░▓█▒░██▓ ▓█   ▓██▒  ▒██▒ ░    ▒██▒   ░██▒░▒█░              ~");
+                self::$console->println("~          ▒ ░░    ▒ ░░▒░▒ ▒▒   ▓▒█░  ▒ ░░      ░ ▒░   ░  ░ ▒ ░              ~");
+                self::$console->println("~            ░     ▒ ░▒░ ░  ▒   ▒▒ ░    ░       ░  ░      ░ ░                ~");
+                self::$console->println("~          ░       ░  ░░ ░  ░   ▒     ░         ░      ░    ░ ░              ~");
+                self::$console->println("~                  ░  ░  ░      ░  ░                   ░                     ~");
+                self::$console->println("~                    ▓█████▄  ▒█████   █     █░ ███▄    █                    ~");
+                self::$console->println("~                    ▒██▀ ██▌▒██▒  ██▒▓█░ █ ░█░ ██ ▀█   █                    ~");
+                self::$console->println("~                    ░██   █▌▒██░  ██▒▒█░ █ ░█ ▓██  ▀█ ██▒                   ~");
+                self::$console->println("~                    ░▓█▄   ▌▒██   ██░░█░ █ ░█ ▓██▒  ▐▌██▒                   ~");
+                self::$console->println("~                    ░▒████▓ ░ ████▓▒░░░██▒██▓ ▒██░   ▓██░                   ~");
+                self::$console->println("~                     ▒▒▓  ▒ ░ ▒░▒░▒░ ░ ▓░▒ ▒  ░ ▒░   ▒ ▒                    ~");
+                self::$console->println("~                     ░ ▒  ▒   ░ ▒ ▒░   ▒ ░ ░  ░ ░░   ░ ▒░                   ~");
+                self::$console->println("~                     ░ ░  ░ ░ ░ ░ ▒    ░   ░     ░   ░ ░                    ~");
+                self::$console->println("~                       ░        ░ ░      ░             ░                    ~");
+                self::$console->println("~                     ░                                                      ~");
+                self::$console->println("~                                                                            ~");
+                self::$console->println("~                                                                            ~");
+                self::$console->println("~                                                                            ~");
+                self::$console->println("~                                                                            ~");
+                self::$console->println("~                                                                            ~");
+                self::$console->println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+
                 self::$console->println("You are the winner!");
                 break;
             }
