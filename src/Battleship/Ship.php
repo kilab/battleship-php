@@ -66,27 +66,36 @@ class Ship
 
         // Determine if the new position is contiguous and in the correct direction
         if (!empty($this->positions)) {
-            $lastPosition = $this->positions[count($this->positions) - 1];
-
-            $isHorizontal = $lastPosition->getRow() === $row;
-            $isVertical = $lastPosition->getColumn() === $column;
-
-            $isContiguous = (
-                ($isHorizontal && abs(ord($lastPosition->getColumn()) - ord($column)) === 1) ||
-                ($isVertical && abs($lastPosition->getRow() - $row) === 1)
-            );
-
-            if (!$isContiguous) {
-                throw new \Exception("Position $input is not contiguous or misaligned with existing positions.");
+            $isValidPlacement = false;
+            
+            foreach ($this->positions as $existingPosition) {
+                $isHorizontal = $existingPosition->getRow() === $row;
+                $isVertical = $existingPosition->getColumn() === $column;
+                
+                $isContiguous = (
+                    ($isHorizontal && abs(ord($existingPosition->getColumn()) - ord($column)) === 1) ||
+                    ($isVertical && abs($existingPosition->getRow() - $row) === 1)
+                );
+                
+                if ($isContiguous) {
+                    $isValidPlacement = true;
+                    break;
+                }
             }
 
-            // Ensure consistent direction
-            if (count($this->positions) > 1) {
-                $secondLastPosition = $this->positions[count($this->positions) - 2];
-                $previousDirectionHorizontal = $secondLastPosition->getRow() === $lastPosition->getRow();
-                $previousDirectionVertical = $secondLastPosition->getColumn() === $lastPosition->getColumn();
+            if (!$isValidPlacement) {
+                throw new \Exception("Position $input is not contiguous with existing positions.");
+            }
 
-                if (($previousDirectionHorizontal && !$isHorizontal) || ($previousDirectionVertical && !$isVertical)) {
+            // Ensure consistent direction if more than 2 positions are placed
+            if (count($this->positions) > 1) {
+                $isHorizontalPlacement = $this->positions[0]->getRow() === $this->positions[1]->getRow();
+                $isVerticalPlacement = $this->positions[0]->getColumn() === $this->positions[1]->getColumn();
+                
+                $newIsHorizontal = $this->positions[0]->getRow() === $row;
+                $newIsVertical = $this->positions[0]->getColumn() === $column;
+
+                if (($isHorizontalPlacement && !$newIsHorizontal) || ($isVerticalPlacement && !$newIsVertical)) {
                     throw new \Exception("Position $input changes the direction of the ship.");
                 }
             }
