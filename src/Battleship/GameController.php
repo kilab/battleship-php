@@ -10,6 +10,7 @@ class GameController
     private static $computerHits = array();
     private static $playerSunkShips = array();
     private static $computerSunkShips = array();
+    private static $computerShots = array();
 
     public static function checkIsHit(array $fleet, $shot)
     {
@@ -49,13 +50,14 @@ class GameController
 
     public static function getRandomPosition()
     {
-        $rows = 8;
-        $lines = 8;
+        do {
+            $letter = Letter::value(random_int(0, 7));
+            $number = random_int(1, 8);
+            $position = new Position($letter, $number);
+        } while (in_array((string)$position, self::$computerShots));
 
-        $letter = Letter::value(random_int(0, $lines - 1));
-        $number = random_int(0, $rows - 1);
-
-        return new Position($letter, $number);
+        self::$computerShots[] = (string)$position;
+        return $position;
     }
 
     public static function addHit($position, $isPlayer = true)
@@ -99,5 +101,6 @@ class GameController
         self::$computerHits = array();
         self::$playerSunkShips = array();
         self::$computerSunkShips = array();
+        self::$computerShots = array();
     }
 }
