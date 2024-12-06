@@ -153,18 +153,7 @@ class App
 
                     try {
                         $position = self::parsePosition($input);
-
-                        // Check if position is already taken
-                        foreach (self::$myFleet as $existingShip) {
-                            foreach ($existingShip->getPositions() as $existingPosition) {
-                                if ($existingPosition == $position) {
-                                    throw new \Exception("Position already occupied by another ship");
-                                }
-                            }
-                        }
-
-                        $ship->addPosition($position->getColumn() . $position->getRow());
-
+                        $ship->addPosition((string)$position, self::$myFleet);
                     } catch (\Exception $e) {
                         self::$console->setForegroundColor(Color::RED);
                         self::$console->println("Error: " . $e->getMessage());
