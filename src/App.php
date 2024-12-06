@@ -93,8 +93,8 @@ class App
                 [new Position('H', 3), new Position('H', 4)]
             ],
             [
-                [new Position('D', 5), new Position('D', 6), new Position('D', 7), new Position('D', 8), new Position('D', 9)],
-                [new Position('A', 6), new Position('A', 7), new Position('A', 8), new Position('A', 9)],
+                [new Position('D', 4), new Position('D', 5), new Position('D', 6), new Position('D', 7), new Position('D', 8)],
+                [new Position('A', 5), new Position('A', 6), new Position('A', 7), new Position('A', 8)],
                 [new Position('F', 2), new Position('G', 2), new Position('H', 2)],
                 [new Position('B', 4), new Position('C', 4), new Position('D', 4)],
                 [new Position('E', 7), new Position('F', 7)]
