@@ -60,7 +60,7 @@ class Ship
         // Check if the new position overlaps with itself
         foreach ($this->positions as $position) {
             if ((string) $position === (string) $newPosition) {
-                throw new \Exception("Position $input overlaps with itself.");
+                throw new \Exception("Position $input is already part of the ship.");
             }
         }
 
@@ -96,7 +96,7 @@ class Ship
                 $newIsVertical = $this->positions[0]->getColumn() === $column;
 
                 if (($isHorizontalPlacement && !$newIsHorizontal) || ($isVerticalPlacement && !$newIsVertical)) {
-                    throw new \Exception("Position $input changes the direction of the ship.");
+                    throw new \Exception("Position $input does not belong to the same row or column as the rest of the ship.");
                 }
             }
         }
