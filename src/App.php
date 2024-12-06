@@ -119,17 +119,6 @@ class App
         }
     }
 
-    public static function getRandomPosition()
-    {
-        $rows = 8;
-        $lines = 8;
-
-        $letter = Letter::value(random_int(0, $lines - 1));
-        $number = random_int(0, $rows - 1);
-
-        return new Position($letter, $number);
-    }
-
     public static function InitializeMyFleet()
     {
         self::$myFleet = GameController::initializeShips();
@@ -294,7 +283,7 @@ class App
             self::$console->setForegroundColor(Color::YELLOW);
             self::$console->println("\n=== COMPUTER'S TURN ===");
 
-            $position = self::getRandomPosition();
+            $position = GameController::getRandomPosition();
             $isHit = GameController::checkIsHit(self::$myFleet, $position);
 
             self::$console->setForegroundColor($isHit ? Color::RED : Color::BLUE);
