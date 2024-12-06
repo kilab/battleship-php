@@ -40,12 +40,78 @@ class Ship
         return $this->color;
     }
 
-    public function addPosition(string $input): void
+    /**
+     * @throws \Exception
+     */
+    public function addPosition(string $input, array $otherShips = []): void
     {
-        $letter = substr($input, 0, 1);
-        $number = substr($input, 1, 1);
+        // Extract column and row from input
+        $column = strtoupper(substr($input, 0, 1));
+        $row = (int) substr($input, 1);
 
-        $this->positions[] = new Position($letter, $number);
+        // Validate the new position
+        $newPosition = new Position($column, $row);
+
+        // Ensure the ship's position doesn't exceed its size
+        if (count($this->positions) >= $this->size) {
+            throw new \Exception("Cannot add more positions. Ship already fully positioned.");
+        }
+
+        // Check if the new position overlaps with itself
+        foreach ($this->positions as $position) {
+            if ((string) $position === (string) $newPosition) {
+                throw new \Exception("Position $input overlaps with itself.");
+            }
+        }
+
+        // Determine if the new position is contiguous and in the correct direction
+        if (!empty($this->positions)) {
+            $isValidPlacement = false;
+            
+            foreach ($this->positions as $existingPosition) {
+                $isHorizontal = $existingPosition->getRow() === $row;
+                $isVertical = $existingPosition->getColumn() === $column;
+                
+                $isContiguous = (
+                    ($isHorizontal && abs(ord($existingPosition->getColumn()) - ord($column)) === 1) ||
+                    ($isVertical && abs($existingPosition->getRow() - $row) === 1)
+                );
+                
+                if ($isContiguous) {
+                    $isValidPlacement = true;
+                    break;
+                }
+            }
+
+            if (!$isValidPlacement) {
+                throw new \Exception("Position $input is not contiguous with existing positions.");
+            }
+
+            // Ensure consistent direction if more than 2 positions are placed
+            if (count($this->positions) > 1) {
+                $isHorizontalPlacement = $this->positions[0]->getRow() === $this->positions[1]->getRow();
+                $isVerticalPlacement = $this->positions[0]->getColumn() === $this->positions[1]->getColumn();
+                
+                $newIsHorizontal = $this->positions[0]->getRow() === $row;
+                $newIsVertical = $this->positions[0]->getColumn() === $column;
+
+                if (($isHorizontalPlacement && !$newIsHorizontal) || ($isVerticalPlacement && !$newIsVertical)) {
+                    throw new \Exception("Position $input changes the direction of the ship.");
+                }
+            }
+        }
+
+        // Check for overlaps with other ships
+        foreach ($otherShips as $otherShip) {
+            foreach ($otherShip->getPositions() as $otherPosition) {
+                if ((string) $otherPosition === (string) $newPosition) {
+                    throw new \Exception("Position $input overlaps with another ship.");
+                }
+            }
+        }
+
+        // Add the new position if all validations pass
+        $this->positions[] = $newPosition;
     }
 
     public function getPositions(): array
